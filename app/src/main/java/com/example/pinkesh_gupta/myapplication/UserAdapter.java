@@ -2,6 +2,7 @@ package com.example.pinkesh_gupta.myapplication;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    Context ctx;
-    List<UserContent> userContentList;
+   private Context ctx;
+   private List<UserContent> userContentList;
 
     public UserAdapter(Context ctx, List<UserContent> userContentList) {
         this.ctx = ctx;
@@ -41,6 +42,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         holder.textView_description.setText(userContent.getDescription());
         holder.textView_title.setText(userContent.getTitle());
+        if(userContent.getDescription()!=null || userContent.getTitle()!=null)
+        {
+            holder.cardView.setVisibility(View.VISIBLE);
+            holder.imageView_imagearrow.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.cardView.setVisibility(View.GONE);
+            holder.imageView_imagearrow.setVisibility(View.GONE);
+        }
 
     }
 
@@ -62,6 +72,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         @BindView(R.id.image_arrow)
         ImageView imageView_imagearrow;
+
+        @BindView(R.id.card_view)
+        CardView cardView;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);

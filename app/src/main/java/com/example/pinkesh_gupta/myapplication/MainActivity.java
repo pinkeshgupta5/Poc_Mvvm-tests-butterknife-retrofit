@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mActionBarToolbar;
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         userViewModel.getUsers().observe(this, new Observer<List<UserContent>>() {
             @Override
@@ -54,5 +58,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                RefreshData();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    public void RefreshData(){
+
+        userViewModel.getUsers().observe(this, new Observer<List<UserContent>>() {
+            @Override
+            public void onChanged(@Nullable List<UserContent> userContentList) {
+                userAdapter = new UserAdapter(MainActivity.this,userContentList);
+                recyclerView.setAdapter(userAdapter);
+            }
+        });
     }
 }
